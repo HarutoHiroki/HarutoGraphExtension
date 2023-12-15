@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Haruto's GraphExtension</title>
+    <script src="content.js"></script>
+    <link rel="stylesheet" type="text/css" href="popup.css" />
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <img class="logo" src="icons/icon.png" alt="Logo" id="logo">
+            <h1 class="title">Haruto's Graph Extension</h1>
+            <label class="toggleswitch">
+              <input type="checkbox" id="toggleButton">
+              <span class="toggle round"></span>
+            </label>
+        </div>
+        <div class="volume">
+            <h3 id="volumeLabel" style="margin-bottom:6px">Volume: 100%</h3>
+            <div>
+                <input type="range" min="0" max="500" step="1" value="100" class="slider" id="volumeSlider">
+            </div>
+            <h4 style="position: absolute; left:30px;">0%</h4>
+            <h4 style="position: absolute; right:30px;">500%</h4>
+        </div>
+        <div class="filters" style="margin-top:3px;">
+            <h3>Filters</h3>
+            <div id="filtersList" style="margin-top:3px;">
+                <!-- Filters acquired from GraphTool -->
+            </div>
+        </div>
+        <div class="footer">
+            <h4>
+                <a href="https://ko-fi.com/harutohiroki" target="_blank" style="color: #9a34e2;">Tutorial</a> -
+                <a href="https://ko-fi.com/harutohiroki" target="_blank" style="color: #9a34e2;">Support me</a>
+            </h4>
+            <h4><p>Made with <span style="color: red;">&hearts;</span> by <a href="https://harutohiroki.com/" target="_blank" style="color: #9a34e2;">HarutoHiroki</a></p></h4>
+        </div>
+    </div>
+</body>
+</html>

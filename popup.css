@@ -1,0 +1,173 @@
+/* normalize css starts here */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* normalize css ends here */
+
+
+html {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+    color: #222;
+}
+
+body {
+    width: 350px;
+    height: 350px;
+}
+
+a {
+    text-decoration:none;
+}
+
+a:hover {
+    text-decoration:underline;
+}
+
+.app {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+    padding-top:15px;
+}
+
+.header {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.volume, .filters {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+.footer {
+    width: 100%;
+    position: absolute;
+    bottom: 15px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.logo {
+    width: 36px;
+    height: 36px;
+}
+
+.subtitle {
+    font-size: 12px;
+}
+
+code {
+    font-size: 12px;
+    font-family: inherit;
+    background-color: rgba(254, 237, 185, .3);
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 92%;
+    margin: 0;
+    border: 1px solid hsl(0, 0%, 65%);
+    border-radius: 1em;
+    accent-color: hsl(0, 0%, 0%);
+    background-color: hsl(0, 0%, 100%);
+}
+.slider:hover {
+    opacity: 1;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: hsl(0, 0%, 65%);
+    border-radius: 1em;
+    cursor: pointer;
+}
+.slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: hsl(0, 0%, 65%);
+    border-radius: 1em;
+    cursor: pointer;
+}
+
+.toggleswitch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    margin-top: 3px;
+  }
+  
+.toggleswitch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.toggle:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .toggle {
+  background-color: #2196F3;
+}
+
+input:focus + .toggle {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .toggle:before {
+  -webkit-transform: translateX(18px);
+  -ms-transform: translateX(18px);
+  transform: translateX(18px);
+}
+
+/* Rounded sliders */
+.toggle.round {
+  border-radius: 34px;
+}
+
+.toggle.round:before {
+  border-radius: 50%;
+}

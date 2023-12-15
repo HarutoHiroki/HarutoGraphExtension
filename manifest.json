@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "Haruto's GraphExtension",
+  "version": "0.1.0",
+  "description": "Haruto's GraphTool Extension to make GraphTool EQ the entire browser",
+  "permissions": [
+    "tabCapture",
+    "tabs"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["injector.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "browser_action": {
+    "default_title": "Haruto's GraphExtension",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon.png",
+    "32": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  }
+}
