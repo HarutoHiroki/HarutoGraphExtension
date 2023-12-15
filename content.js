@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Update UI
   window.onload = function() {
     chrome.runtime.sendMessage({action: "popupOpened"});
-  };
+  }
 
   // Turn on/off extension
   function updateState(state) {
@@ -59,8 +59,4 @@ document.addEventListener('DOMContentLoaded', function() {
   volumeSlider.addEventListener('input', function() {
     updateVolume(volumeSlider.value/100);
   });
-
-  //document.addEventListener('UpdateExtensionFilters', function(e) {
-  //  updateFilters(e.filters);
-  //});
 });

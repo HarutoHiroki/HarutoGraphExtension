@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Haruto's GraphExtension",
   "version": "0.1.0",
-  "description": "Haruto's GraphTool Extension to make GraphTool EQ the entire browser",
+  "description": "Haruto's GraphTool Extension to make GraphTool EQ any audio playing tabs",
   "permissions": [
     "tabCapture",
     "tabs"
