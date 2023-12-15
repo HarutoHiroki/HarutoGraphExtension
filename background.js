@@ -67,7 +67,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
       // update filters for all enabled tabs
       activeTabsInfo.forEach(tabInfo => {
-        if (tabInfo.state == true) {
+        if (tabInfo && tabInfo.state == true) {
           applyEQ(tabInfo.obj, filters);
         }
       });
@@ -127,7 +127,7 @@ function applyEQ(tab, filters) {
   nodes[nodes.length - 1].disconnect();
 
   filters.forEach(filterInfo => {
-    const filter = currentTabObj.audioContext.createBiquadFilter();
+    const filter = tab.audioContext.createBiquadFilter();
     let type;
     if (filterInfo.type == "PK") {
         type = "peaking";
