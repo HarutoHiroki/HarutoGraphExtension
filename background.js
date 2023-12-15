@@ -22,6 +22,14 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
   chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
 });
 
+// clear tab info when tab is closed
+chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+  let index = activeTabsInfo.findIndex(tab => tab.tabId == tabId);
+  if (index != -1) {
+    activeTabsInfo.splice(index, 1);
+  }
+});
+
 function updateTabInfo(obj, state, volume) {
   // Save current tab info
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
