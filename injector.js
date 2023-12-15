@@ -39,3 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.runtime.sendMessage({action: 'updateFilters', filters: event.data.data});
   });
 });
+
+/* Logic:
+  * 1. Check if current site is configurated
+  * 2. If yes, inject script
+  * 3. Listen for message from injected script
+  * 4. Send message to background.js
+  * 5. Update filters
+  */

@@ -60,3 +60,11 @@ document.addEventListener('DOMContentLoaded', function() {
     updateVolume(volumeSlider.value/100);
   });
 });
+
+/* Logic:
+  * 1. Listen for messages from background.js
+  * 2. Update UI accordingly
+  * 3. Listen for user input
+  * 4. Send message to background.js
+  * 5. Update state/volume/filters list
+  */

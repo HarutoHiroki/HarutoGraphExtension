@@ -147,3 +147,13 @@ function applyEQ(tab, filters) {
 
   nodes[nodes.length - 1].connect(tab.gainNode);
 }
+
+/* logic: 
+  * 1. Listen for messages from content.js for state and volume
+  * 2. If message caught, update state and volume
+  * 3. Every time state is true, create audio stream for current tab and save current tab info
+  * 3.5. State and Volume is Tab Specific, Filters are global
+  * 4. If state is false, disconnect audio stream for current tab
+  * 5. Listen to message from injector.js for filters
+  * 6. Apply EQ to all tabs with state true
+  */
