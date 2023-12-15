@@ -65,9 +65,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'updateFilters':
       filters = request.filters;
       chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
-      if (state == true) {
-        applyEQ(currentTabObj, filters);
-      }
+      // update filters for all enabled tabs
+      activeTabsInfo.forEach(tabInfo => {
+        if (tabInfo.state == true) {
+          applyEQ(tabInfo.obj, filters);
+        }
+      });
       break;
     default:
       console.error('Unrecognised message: ', request);
