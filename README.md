@@ -1,6 +1,6 @@
 # <img src="icons/icon.png" width="45" align="left"> Haruto's GraphExtension
 
-Haruto's Extension to expand Haruto's GraphTool to apply EQ browser-wide.
+A browser extension that enables the usage of any supported GraphTool's expansive EQ function on any website with a single click.
 
 ## Features
 
