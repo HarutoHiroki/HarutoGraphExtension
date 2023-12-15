@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const configuratedSites = [
-    "https://graphtool.harutohiroki.com/*"
+    "https://graphtool.harutohiroki.com/*",
+    "https://listener800.github.io/*"
   ];
 
   // check if current site is configurated
