@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Haruto's GraphExtension",
   "version": "0.1.2",
   "description": "Haruto's GraphTool Extension to make GraphTool EQ any audio playing tabs",
@@ -8,7 +8,7 @@
     "tabs"
   ],
   "background": {
-    "scripts": ["js/background.js"]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -21,7 +21,7 @@
       "js": ["js/content.js"]
     }
   ],
-  "browser_action": {
+  "action": {
     "default_title": "Haruto's GraphExtension",
     "default_popup": "popup.html"
   },
