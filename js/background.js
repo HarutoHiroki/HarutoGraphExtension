@@ -127,12 +127,12 @@ function applyEQ(tab, filters) {
   let source = tab.source;
   let nodes = [source];
 
+  nodes[nodes.length - 1].disconnect();
+
   if (filters.length == 0) {
-    source.connect(tab.gainNode);
+    nodes[nodes.length - 1].connect(tab.gainNode);
     return;
   }
-
-  nodes[nodes.length - 1].disconnect();
 
   filters.forEach(filterInfo => {
     const filter = tab.audioContext.createBiquadFilter();
