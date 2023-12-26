@@ -3,6 +3,7 @@
   "name": "Haruto's GraphExtension",
   "version": "0.2.0",
   "description": "Haruto's GraphTool Extension to make GraphTool EQ any audio playing tabs",
+  "author": "root@harutohiroki.com",
   "permissions": [
     "tabCapture",
     "tabs"
