@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const volumeSlider = document.getElementById('volumeSlider');
   const volumeLabel = document.getElementById('volumeLabel');
   const filtersList = document.getElementById('filtersList');
+  const clearButton = document.getElementById('clearFilters');
 
   // Update UI
   window.onload = function() {
@@ -50,14 +51,21 @@ document.addEventListener('DOMContentLoaded', function() {
       updateFiltersList(filters);
     }
   });
-
+  
+  // Toggle extension on/off
   toggleButton.addEventListener('click', function() {
     let state = toggleButton.checked;
     updateState(state);
   });
 
+  // Volume Slider
   volumeSlider.addEventListener('input', function() {
     updateVolume(volumeSlider.value/100);
+  });
+
+  // Clear Filters
+  clearButton.addEventListener('click', function() {
+    chrome.runtime.sendMessage({action: 'updateFilters', filters: []});
   });
 });
 
