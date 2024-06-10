@@ -4,10 +4,10 @@ let volume = 1;
 let filters = [];
 let activeTabsInfo = [];
 
-// check if current tab is active
+// Check if current tab is active
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   let activeTabId = activeInfo.tabId;
-  let activeTabObj = activeTabsInfo.find(tab => tab.tabId == activeTabId);
+  let activeTabObj = activeTabsInfo.find(tab => tab.tabId === activeTabId);
   if (activeTabObj) {
     currentTabObj = activeTabObj.obj;
     state = activeTabObj.state;
@@ -22,19 +22,19 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
   chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
 });
 
-// clear tab info when tab is closed
-chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-  let index = activeTabsInfo.findIndex(tab => tab.tabId == tabId);
-  if (index != -1) {
+// Clear tab info when tab is closed
+chrome.tabs.onRemoved.addListener((tabId) => {
+  let index = activeTabsInfo.findIndex(tab => tab.tabId === tabId);
+  if (index !== -1) {
     activeTabsInfo.splice(index, 1);
   }
 });
 
 function updateTabInfo(obj, state, volume) {
   // Save current tab info
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     let activeTabId = tabs[0].id;
-    let activeTabObj = activeTabsInfo.find(tab => tab.tabId == activeTabId);
+    let activeTabObj = activeTabsInfo.find(tab => tab.tabId === activeTabId);
     if (activeTabObj) {
       activeTabObj.obj = obj;
       activeTabObj.state = state;
@@ -45,7 +45,7 @@ function updateTabInfo(obj, state, volume) {
   });
 }
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
     case 'popupOpened':
       chrome.runtime.sendMessage({action: 'updatedState', state: state});
@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         volume = request.gain;
         updateTabInfo(currentTabObj, state, volume);
         chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-        if (state == true) {
+        if (state === true) {
           currentTabObj.gainNode.gain.value = volume;
         }
       }
@@ -75,13 +75,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
       // update filters for all enabled tabs
       activeTabsInfo.forEach(tabInfo => {
-        if (tabInfo && tabInfo.state == true) {
+        if (tabInfo && tabInfo.state === true) {
           applyEQ(tabInfo.obj, filters);
         }
       });
       break;
     default:
-      console.error('Unrecognised message: ', request);
+      console.error('Unrecognized message: ', request);
   }
 });
 
@@ -91,7 +91,7 @@ function createTabAudioStream() {
   disconnectTabAudioStream();
 
   // Create new audio stream
-  chrome.tabCapture.capture({audio: true, video: false}, function(stream) {
+  chrome.tabCapture.capture({audio: true, video: false}, (stream) => {
     if (stream) {
       currentTabObj.stream = stream;
       currentTabObj.audioContext = new AudioContext();
@@ -129,29 +129,23 @@ function applyEQ(tab, filters) {
 
   nodes[nodes.length - 1].disconnect();
 
-  if (filters.length == 0) {
+  if (filters.length === 0) {
     nodes[nodes.length - 1].connect(tab.gainNode);
     return;
   }
 
   filters.forEach(filterInfo => {
     const filter = tab.audioContext.createBiquadFilter();
-    let type;
-    if (filterInfo.type == "PK") {
-        type = "peaking";
-    } else if (filterInfo.type == "LSQ") {
-        type = "lowshelf";
-    } else if (filterInfo.type == "HSQ") {
-        type = "highshelf";
-    }
-    filter.type = type;
+    filter.type = filterInfo.type === "PK" ? "peaking" :
+                  filterInfo.type === "LSQ" ? "lowshelf" :
+                  filterInfo.type === "HSQ" ? "highshelf" : "allpass";
     filter.frequency.value = filterInfo.freq;
     filter.Q.value = filterInfo.q;
     filter.gain.value = filterInfo.gain;
-    
+
     nodes[nodes.length - 1].connect(filter);
     nodes.push(filter);
-});
+  });
 
   nodes[nodes.length - 1].connect(tab.gainNode);
 }

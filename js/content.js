@@ -38,29 +38,25 @@ document.addEventListener('DOMContentLoaded', function() {
   // Listen for messages from background.js
   chrome.runtime.onMessage.addListener(function(element) {
     if (element.action === 'updatedState') {
-      let state = element.state;
-      toggleButton.checked = state;
+      toggleButton.checked = element.state;
     }
     if (element.action === 'updatedVolume') {
-      let volume = element.gain;
-      volumeSlider.value = volume*100;
+      volumeSlider.value = element.gain * 100;
       volumeLabel.innerHTML = 'Volume: ' + volumeSlider.value + '%';
     }
     if (element.action === 'updatedFilters') {
-      let filters = element.filters;
-      updateFiltersList(filters);
+      updateFiltersList(element.filters);
     }
   });
-  
+
   // Toggle extension on/off
   toggleButton.addEventListener('click', function() {
-    let state = toggleButton.checked;
-    updateState(state);
+    updateState(toggleButton.checked);
   });
 
   // Volume Slider
   volumeSlider.addEventListener('input', function() {
-    updateVolume(volumeSlider.value/100);
+    updateVolume(volumeSlider.value / 100);
   });
 
   // Clear Filters
