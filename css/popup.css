@@ -171,3 +171,11 @@ input:checked + .toggle:before {
 .toggle.round:before {
   border-radius: 50%;
 }
+
+.inline {
+    display: inline;
+}
+
+.hoverCursor {
+    cursor: pointer;
+}

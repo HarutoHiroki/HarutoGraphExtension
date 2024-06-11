@@ -9,11 +9,12 @@ A browser extension that enables the usage of any supported GraphTool's expansiv
 
 ## Extension Install
 
-~~[**Chrome** extension]()~~ Hell nah am I paying $5 to Google for a developer account.
-
-[**Firefox** extension](https://www.youtube.com/watch?v=dQw4w9WgXcQ) Coming Soon, this link leads to a rick roll, don't click it.
-
 [**Opera** extension](https://www.youtube.com/watch?v=dQw4w9WgXcQ) Coming Soon, this link leads to a rick roll, don't click it.
+
+~~[**Chrome** extension]()~~ Hell nah am I paying $5 to Google for a developer account. Another reason is because they are deprecating Manifest V2,
+which is crucial for this extension to work. I will not be paying $5 to Google just to have my extension work for a few months.
+
+~~[**Firefox** extension]()~~ Same reason as Chrome, Firefox doesn't support the tabCapture API, which is crucial for this extension to work.
 
 ## Manual install
 
