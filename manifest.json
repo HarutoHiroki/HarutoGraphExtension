@@ -5,8 +5,10 @@
   "description": "Haruto's GraphTool Extension to make GraphTool EQ any audio playing tabs",
   "author": "root@harutohiroki.com",
   "permissions": [
-    "tabCapture",
-    "tabs"
+    "<all_urls>",
+    "tabs",
+    "activeTab",
+    "storage"
   ],
   "background": {
     "scripts": ["js/background.js"]
@@ -24,7 +26,11 @@
   ],
   "browser_action": {
     "default_title": "Haruto's GraphExtension",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icons/icon.png",
+      "128": "icons/icon.png"
+    }
   },
   "icons": {
     "48": "icons/icon.png",

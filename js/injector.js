@@ -1,3 +1,7 @@
+function _browser() {
+  return typeof browser !== 'undefined' ? browser : chrome;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const configuratedSites = [
     "https://graphtool.harutohiroki.com/*",
@@ -36,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
   
-    chrome.runtime.sendMessage({action: 'updateFilters', filters: event.data.data});
+    _browser().runtime.sendMessage({action: 'updateFilters', filters: event.data.data});
   });
 });
 

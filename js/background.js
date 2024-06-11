@@ -4,8 +4,12 @@ let volume = 1;
 let filters = [];
 let activeTabsInfo = [];
 
+function _browser() {
+  return typeof browser !== 'undefined' ? browser : chrome;
+}
+
 // Check if current tab is active
-chrome.tabs.onActivated.addListener(function(activeInfo) {
+_browser().tabs.onActivated.addListener(function(activeInfo) {
   let activeTabId = activeInfo.tabId;
   let activeTabObj = activeTabsInfo.find(tab => tab.tabId === activeTabId);
   if (activeTabObj) {
@@ -17,13 +21,13 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     state = false;
     volume = 1;
   }
-  chrome.runtime.sendMessage({action: 'updatedState', state: state});
-  chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-  chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+  _browser().runtime.sendMessage({action: 'updatedState', state: state});
+  _browser().runtime.sendMessage({action: 'updatedVolume', gain: volume});
+  _browser().runtime.sendMessage({action: 'updatedFilters', filters: filters});
 });
 
 // Clear tab info when tab is closed
-chrome.tabs.onRemoved.addListener((tabId) => {
+_browser().tabs.onRemoved.addListener((tabId) => {
   let index = activeTabsInfo.findIndex(tab => tab.tabId === tabId);
   if (index !== -1) {
     activeTabsInfo.splice(index, 1);
@@ -32,7 +36,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 function updateTabInfo(obj, state, volume) {
   // Save current tab info
-  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+  _browser().tabs.query({active: true, currentWindow: true}, (tabs) => {
     let activeTabId = tabs[0].id;
     let activeTabObj = activeTabsInfo.find(tab => tab.tabId === activeTabId);
     if (activeTabObj) {
@@ -45,26 +49,26 @@ function updateTabInfo(obj, state, volume) {
   });
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+_browser().runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
     case 'popupOpened':
-      chrome.runtime.sendMessage({action: 'updatedState', state: state});
-      chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-      chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+      _browser().runtime.sendMessage({action: 'updatedState', state: state});
+      _browser().runtime.sendMessage({action: 'updatedVolume', gain: volume});
+      _browser().runtime.sendMessage({action: 'updatedFilters', filters: filters});
       break;
     case 'updateState':
       state = request.state;
       state ? createTabAudioStream() : disconnectTabAudioStream();
       updateTabInfo(currentTabObj, state, volume);
-      chrome.runtime.sendMessage({action: 'updatedState', state: state});
-      chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-      chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+      _browser().runtime.sendMessage({action: 'updatedState', state: state});
+      _browser().runtime.sendMessage({action: 'updatedVolume', gain: volume});
+      _browser().runtime.sendMessage({action: 'updatedFilters', filters: filters});
       break;
     case 'updateVolume':
       if (isFinite(request.gain)) {
         volume = request.gain;
         updateTabInfo(currentTabObj, state, volume);
-        chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
+        _browser().runtime.sendMessage({action: 'updatedVolume', gain: volume});
         if (state === true) {
           currentTabObj.gainNode.gain.value = volume;
         }
@@ -72,7 +76,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
     case 'updateFilters':
       filters = request.filters;
-      chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+      _browser().runtime.sendMessage({action: 'updatedFilters', filters: filters});
       // update filters for all enabled tabs
       activeTabsInfo.forEach(tabInfo => {
         if (tabInfo && tabInfo.state === true) {
@@ -91,7 +95,7 @@ function createTabAudioStream() {
   disconnectTabAudioStream();
 
   // Create new audio stream
-  chrome.tabCapture.capture({audio: true, video: false}, (stream) => {
+  _browser().tabCapture.capture({audio: true, video: false}, (stream) => {
     if (stream) {
       currentTabObj.stream = stream;
       currentTabObj.audioContext = new AudioContext();
