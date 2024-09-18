@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // Inject script into all isConfigured sites
   if (isConfigured(window.location.href)) {
     injectScript();
+  
+    window.addEventListener('message', function(event) {
+      if (event.source !== window || !event.data || event.data.type !== 'GraphToolFiltersUpdate') {
+        return;
+      }
+    
+      _browser().runtime.sendMessage({action: 'updateFilters', filters: event.data.data});
+    }); 
   }
-  
-  window.addEventListener('message', function(event) {
-    if (event.source !== window || !event.data || event.data.type !== 'GraphToolFiltersUpdate') {
-      return;
-    }
-  
-    chrome.runtime.sendMessage({action: 'updateFilters', filters: event.data.data});
-  });
 });
 
 /* Logic:

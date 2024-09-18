@@ -4,6 +4,16 @@ let volume = 1;
 let filters = [];
 let activeTabsInfo = [];
 
+function _browser() {
+  return typeof browser !== 'undefined' ? browser : chrome;
+}
+
+function bulkUpdate(state, volume, filters) {
+  state ? _browser().runtime.sendMessage({action: 'updatedState', state: state}) : null;
+  volume ? _browser().runtime.sendMessage({action: 'updatedVolume', gain: volume}) : null;
+  filters ? _browser().runtime.sendMessage({action: 'updatedFilters', filters: filters}) : null;
+}
+
 // Check if current tab is active
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   let activeTabId = activeInfo.tabId;
@@ -17,9 +27,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     state = false;
     volume = 1;
   }
-  chrome.runtime.sendMessage({action: 'updatedState', state: state});
-  chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-  chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+  bulkUpdate(state, volume, filters);
 });
 
 // Clear tab info when tab is closed
@@ -48,23 +56,19 @@ function updateTabInfo(obj, state, volume) {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
     case 'popupOpened':
-      chrome.runtime.sendMessage({action: 'updatedState', state: state});
-      chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-      chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+      bulkUpdate(state, volume, filters);
       break;
     case 'updateState':
       state = request.state;
       state ? createTabAudioStream() : disconnectTabAudioStream();
       updateTabInfo(currentTabObj, state, volume);
-      chrome.runtime.sendMessage({action: 'updatedState', state: state});
-      chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
-      chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+      bulkUpdate(state, volume, filters);
       break;
     case 'updateVolume':
       if (isFinite(request.gain)) {
         volume = request.gain;
         updateTabInfo(currentTabObj, state, volume);
-        chrome.runtime.sendMessage({action: 'updatedVolume', gain: volume});
+        bulkUpdate(state, volume, filters);
         if (state === true) {
           currentTabObj.gainNode.gain.value = volume;
         }
@@ -72,7 +76,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
     case 'updateFilters':
       filters = request.filters;
-      chrome.runtime.sendMessage({action: 'updatedFilters', filters: filters});
+      bulkUpdate(state, volume, filters);
       // update filters for all enabled tabs
       activeTabsInfo.forEach(tabInfo => {
         if (tabInfo && tabInfo.state === true) {
@@ -91,22 +95,57 @@ function createTabAudioStream() {
   disconnectTabAudioStream();
 
   // Create new audio stream
-  chrome.tabCapture.capture({audio: true, video: false}, (stream) => {
-    if (stream) {
-      currentTabObj.stream = stream;
-      currentTabObj.audioContext = new AudioContext();
-      currentTabObj.source = currentTabObj.audioContext.createMediaStreamSource(stream);
-      currentTabObj.gainNode = currentTabObj.audioContext.createGain();
-      currentTabObj.source.connect(currentTabObj.gainNode);
-      currentTabObj.gainNode.connect(currentTabObj.audioContext.destination);
-      state = true;
-      currentTabObj.gainNode.gain.value = volume;
-      applyEQ(currentTabObj, filters);
+  if (_browser().tabCapture) {
+    _browser().tabCapture.capture({audio: true, video: false}, (stream) => {
+      if (stream) {
+        currentTabObj.stream = stream;
+        currentTabObj.audioContext = new AudioContext();
+        currentTabObj.source = currentTabObj.audioContext.createMediaStreamSource(stream);
+        currentTabObj.gainNode = currentTabObj.audioContext.createGain();
+        currentTabObj.source.connect(currentTabObj.gainNode);
+        currentTabObj.gainNode.connect(currentTabObj.audioContext.destination);
+        state = true;
+        currentTabObj.gainNode.gain.value = volume;
+        applyEQ(currentTabObj, filters);
 
-      // Save current tab info
-      updateTabInfo(currentTabObj, state, volume);
-    }
-  });
+        // Save current tab info
+        updateTabInfo(currentTabObj, state, volume);
+      }
+    });
+  } else {
+    _browser().tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      let activeTabId = tabs[0].id;
+      _browser().tabs.executeScript(activeTabId, {
+        code: `(${function() {
+                  const tabContext = new AudioContext();
+                  const tabDest = tabContext.createMediaStreamDestination();
+
+                  const mediaElement = Array.from(document.querySelectorAll('audio, video'));
+                  return mediaElement;
+                  // mediaElement.forEach(element => {
+                  //   const source = tabContext.createMediaElementSource(element);
+                  // });
+
+                }})();`
+      }).then(stream => {
+        if (stream) {
+          //currentTabObj.stream = stream;
+          //currentTabObj.audioContext = new AudioContext();
+          //currentTabObj.source = currentTabObj.audioContext.createMediaStreamSource(stream);
+          //currentTabObj.gainNode = currentTabObj.audioContext.createGain();
+          //currentTabObj.source.connect(currentTabObj.gainNode);
+          //currentTabObj.gainNode.connect(currentTabObj.audioContext.destination);
+          //state = true;
+          //currentTabObj.gainNode.gain.value = volume;
+          //applyEQ(currentTabObj, filters);
+//
+          //// Save current tab info
+          //updateTabInfo(currentTabObj, state, volume);
+          console.log(stream);
+        }
+      });
+    });
+  }
 }
 
 // Disconnect audio stream for current tab
